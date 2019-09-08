@@ -1,5 +1,4 @@
 #include<bits\stdc++.h>
-#include<SDL2/SDL.h>
 #include "Game.cpp"
 
 using namespace std;
@@ -10,7 +9,7 @@ int main(int argv, char** args){
 
     game = new Game();
 
-    game->init("Spaceship",SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED,800,600,false);
+    game->init("Spaceship",100,250,800,600,false);
 
     while(game->running()){
         game->handleEvents();

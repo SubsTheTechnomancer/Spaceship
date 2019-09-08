@@ -3,6 +3,9 @@
 
 #include<iostream>
 #include<SDL2/SDL.h>
+#include<SDL2/SDL_Image.h>
+#include<SDL2/SDL_ttf.h>
+#include<string>
 
 using namespace std;
 
@@ -16,7 +19,7 @@ public:
     void handleEvents();
     void update();
     void render();
-    void clean();;
+    void clean();
 
     bool running(){
         return isRunning;
@@ -25,8 +28,11 @@ public:
 private:
 
     bool isRunning;
+    int currentScene;
     SDL_Window *window;
+    SDL_Window *tWindow;
     SDL_Renderer *renderer;
+    SDL_Renderer *trenderer;
 
 };
 
