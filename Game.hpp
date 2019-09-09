@@ -29,6 +29,8 @@ private:
 
     bool isRunning;
     int currentScene;
+    string promptText;
+    string Input;
     SDL_Window *window;
     SDL_Window *tWindow;
     SDL_Renderer *renderer;

@@ -4,18 +4,17 @@
 
 using namespace std;
 
-SDL_Texture *playerTex;
+SDL_Texture *imageTex;
 SDL_Texture *textTex;
 TTF_Font *font;
-SDL_Rect ImgRect;
-SDL_Rect textRect;
+SDL_Rect ImgRect, InpRect, PrpRect, textRect;
 
 Game::Game(){
-
+    //Nothing
 }
 
 Game::~Game(){
-
+    //Nothing as well
 }
 
 void Game::init(const char* title, int xpos, int ypos, int width, int height, bool fullscreen){
@@ -61,16 +60,14 @@ void Game::init(const char* title, int xpos, int ypos, int width, int height, bo
         cout<<"SDL TTF Working!"<<endl;
     }
 
-    playerTex = TextureManager::LoadTexture("Assets/Main_bg.png",renderer);
+    currentScene = 0;
+    promptText = "";
 
-    font = TTF_OpenFont("TTF/alienleague.ttf",20);
+    font = TTF_OpenFont("TTF/alienleague.ttf",40);
     
-    //textTex = TextureManager::LoadTTF("TTF/alienleague.ttf",font,trenderer,"Something to write What what what what what what");
-
-    textRect = TextureManager::TextRect();
     ImgRect = TextureManager::ImageRect();
 
-    currentScene = 1;
+    Input = "";
 
 }
 
@@ -97,24 +94,49 @@ void Game::handleEvents(){
                 }
             }
             break;
+        case SDL_KEYDOWN:
+            switch(event.key.keysym.sym){
+                case SDLK_BACKSPACE:
+                    if(Input != "")
+                        Input.pop_back();
+                    break;
+                case SDLK_SPACE:
+                    Input.push_back(' ');
+                    break;
+                case SDLK_ESCAPE:
+                    isRunning = false;
+                    break;
+                case SDLK_RETURN:
+                    Lines::Storyboard(&currentScene,Input,&isRunning,&promptText);
+                    Input =  "";
+                    break;
+                default:
+                    char a = SDL_GetKeyName(event.key.keysym.sym)[0];
+                    Input.push_back(a);
+                    break;
+            }
+            break;
         default:
             break;
     }
 }
 
 void Game::update(){
+    imageTex = TextureManager::LoadTexture(currentScene,renderer);
 }
 
 void Game::render(){
     SDL_RenderClear(renderer);
     
-    SDL_RenderCopy(renderer,playerTex,NULL,&ImgRect);
+    SDL_RenderCopy(renderer,imageTex,NULL,&ImgRect);
 
     SDL_RenderPresent(renderer);
 
     SDL_RenderClear(trenderer);
 
-    Lines::RenderLines(trenderer,textRect,font,currentScene);  
+    Lines::RenderLines(trenderer,&textRect,font,currentScene);  
+    Lines::RenderInput(trenderer,&InpRect,font,Input);
+    Lines::RenderPrompt(trenderer,&PrpRect,font,promptText);
 
     SDL_RenderPresent(trenderer);
 }
