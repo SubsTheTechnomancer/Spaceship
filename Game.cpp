@@ -4,7 +4,6 @@
 
 using namespace std;
 
-SDL_Texture *imageTex;
 SDL_Texture *textTex;
 TTF_Font *font;
 SDL_Rect ImgRect, InpRect, PrpRect, textRect;
@@ -60,10 +59,24 @@ void Game::init(const char* title, int xpos, int ypos, int width, int height, bo
         cout<<"SDL TTF Working!"<<endl;
     }
 
+    if(SDLNet_Init() != -1){
+        cout<<"SDL NET Working!"<<endl;
+    }
+
+    fstream fin("Server/Gamedata.dat",fstream::in);
+    string s;
+    getline(fin,s,'\n');
+
+    if(s[0] == '1') situation = 1;
+    else if(s[0] == '2') situation = 2;
+    else if(s[0] == '3') situation = 3;
+
+    name = s.substr(2);
+
     currentScene = 0;
     promptText = "";
 
-    font = TTF_OpenFont("TTF/alienleague.ttf",40);
+    font = TTF_OpenFont("TTF/alienleague.ttf",35);
     
     ImgRect = TextureManager::ImageRect();
 
@@ -107,7 +120,7 @@ void Game::handleEvents(){
                     isRunning = false;
                     break;
                 case SDLK_RETURN:
-                    Lines::Storyboard(&currentScene,Input,&isRunning,&promptText);
+                    Lines::Storyboard(&currentScene,situation,name,Input,&isRunning,&promptText);
                     Input =  "";
                     break;
                 default:
@@ -122,13 +135,12 @@ void Game::handleEvents(){
 }
 
 void Game::update(){
-    imageTex = TextureManager::LoadTexture(currentScene,renderer);
 }
 
 void Game::render(){
     SDL_RenderClear(renderer);
-    
-    SDL_RenderCopy(renderer,imageTex,NULL,&ImgRect);
+
+    TextureManager::LoadTexture(currentScene,renderer,&ImgRect);
 
     SDL_RenderPresent(renderer);
 

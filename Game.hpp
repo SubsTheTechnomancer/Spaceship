@@ -2,9 +2,11 @@
 #define Game_hpp
 
 #include<iostream>
+#include<fstream>
 #include<SDL2/SDL.h>
 #include<SDL2/SDL_Image.h>
 #include<SDL2/SDL_ttf.h>
+#include<SDL2/SDL_net.h>
 #include<string>
 
 using namespace std;
@@ -29,6 +31,8 @@ private:
 
     bool isRunning;
     int currentScene;
+    int situation;
+    string name;
     string promptText;
     string Input;
     SDL_Window *window;
