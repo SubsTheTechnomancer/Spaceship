@@ -1,6 +1,5 @@
 #ifndef Game_hpp
 #define Game_hpp
-
 #include<iostream>
 #include<fstream>
 #include<SDL2/SDL.h>
@@ -32,6 +31,7 @@ private:
     bool isRunning;
     int currentScene;
     int situation;
+    bool leaderboard;
     string name;
     string promptText;
     string Input;

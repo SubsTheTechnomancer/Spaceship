@@ -1,4 +1,5 @@
 #include "Client.hpp"
+#include<sstream>
 
 void Client::run(string playername, int time, int location){
 
@@ -6,7 +7,7 @@ void Client::run(string playername, int time, int location){
     IPaddress ip;
     TCPsocket tcpsock;
 
-    if (SDLNet_ResolveHost(&ip, "14.98.244.193", 9999) == -1) {
+    if (SDLNet_ResolveHost(&ip, "192.168.43.161", 9999) == -1) {
       printf("SDLNet_ResolveHost: %s\n", SDLNet_GetError());
       exit(1);
     }
@@ -17,8 +18,17 @@ void Client::run(string playername, int time, int location){
       exit(2);
     }
 
-    string message;
-
+    string message,t,loc;
+    stringstream ss;
+    ss<<time;
+    t = ss.str();
+    ss.str("");
+    ss<<location;
+    loc = ss.str();
+    ss.str("");
+    
+    message = playername+" "+t+" "+loc;
+    int len = message.length();
 
     if (len) {
         int result;
@@ -27,13 +37,9 @@ void Client::run(string playername, int time, int location){
         printf("Sending: %.*s\n", len, message);
 
         result =
-            SDLNet_TCP_Send(tcpsock, message, len); /* add 1 for the NULL */
+            SDLNet_TCP_Send(tcpsock, message.c_str(), len); /* add 1 for the NULL */
         if (result < len)
           printf("SDLNet_TCP_Send: %s\n", SDLNet_GetError());
-    }
-
-    if (len == 2 && tolower(message[0]) == 'q') {
-        break;
     }
 
     SDLNet_TCP_Close(tcpsock);

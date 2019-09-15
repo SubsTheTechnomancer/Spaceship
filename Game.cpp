@@ -1,6 +1,8 @@
 #include "Game.hpp"
 #include "TextureManager.cpp"
 #include "Lines.cpp"
+#include "Leaderboard.cpp"
+#include "Client.cpp"
 
 using namespace std;
 
@@ -66,6 +68,7 @@ void Game::init(const char* title, int xpos, int ypos, int width, int height, bo
     fstream fin("Server/Gamedata.dat",fstream::in);
     string s;
     getline(fin,s,'\n');
+    fin.close();
 
     if(s[0] == '1') situation = 1;
     else if(s[0] == '2') situation = 2;
@@ -81,6 +84,8 @@ void Game::init(const char* title, int xpos, int ypos, int width, int height, bo
     ImgRect = TextureManager::ImageRect();
 
     Input = "";
+
+    leaderboard = false;
 
 }
 
@@ -120,7 +125,7 @@ void Game::handleEvents(){
                     isRunning = false;
                     break;
                 case SDLK_RETURN:
-                    Lines::Storyboard(&currentScene,situation,name,Input,&isRunning,&promptText);
+                    Lines::Storyboard(&currentScene,situation,name,Input,&isRunning,&promptText,&leaderboard);
                     Input =  "";
                     break;
                 default:
@@ -146,7 +151,12 @@ void Game::render(){
 
     SDL_RenderClear(trenderer);
 
-    Lines::RenderLines(trenderer,&textRect,font,currentScene);  
+    if(leaderboard){
+        Lines::RenderLB(trenderer,&textRect,font,Leaderboard::top);
+    }
+    else{
+        Lines::RenderLines(trenderer,&textRect,font,currentScene);
+    }
     Lines::RenderInput(trenderer,&InpRect,font,Input);
     Lines::RenderPrompt(trenderer,&PrpRect,font,promptText);
 

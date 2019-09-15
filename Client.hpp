@@ -4,5 +4,5 @@
 
 class Client{
 public:
-    static void run();
+    static void run(string playername, int time, int location);
 };

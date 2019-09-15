@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Game.hpp"
+#include "Leaderboard.h"
 #include<string>
 
 class Lines{
@@ -12,5 +13,6 @@ public:
     static void RenderLines(SDL_Renderer* rend,SDL_Rect* rect,TTF_Font* font,int cur);
     static void RenderPrompt(SDL_Renderer* rend,SDL_Rect* rect,TTF_Font* font,string text);
     static void RenderInput(SDL_Renderer* rend,SDL_Rect* rect,TTF_Font* font,string input);
-    static void Storyboard(int* currentScene, int situation, string name, string Input, bool* isRunning,string* promptText);
+    static void RenderLB(SDL_Renderer* rend,SDL_Rect* rect,TTF_Font* font,string top[3]);
+    static void Storyboard(int* currentScene, int situation, string name, string Input, bool* isRunning,string* promptText,bool* leaderboard);
 };

@@ -5,6 +5,12 @@
         "xstring": "cpp",
         "xutility": "cpp",
         "xiosbase": "cpp",
-        "iosfwd": "cpp"
+        "iosfwd": "cpp",
+        "string": "cpp",
+        "cstdio": "cpp",
+        "sstream": "cpp",
+        "system_error": "cpp",
+        "xlocale": "cpp",
+        "fstream": "cpp"
     }
 }

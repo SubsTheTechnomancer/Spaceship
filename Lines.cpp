@@ -5,6 +5,8 @@
 int Lines::time = 0;
 int Lines::location = 0;
 
+Leaderboard l;
+
 string Lines::lines[9][10] = {{"                        SPACESHIP                  ",
                               "                                                    ",
                               "                                                    ",
@@ -117,12 +119,64 @@ void Lines::RenderPrompt(SDL_Renderer* rend,SDL_Rect* rect,TTF_Font* font,string
     SDL_DestroyTexture(tex);
 }
 
-bool lights = false, screwdriver = false, firstkey = false, hammer = false, doorunlock = false;
-bool keycard = false, metalkey = false, medlocker = false;
+void Lines::RenderLB(SDL_Renderer* rend,SDL_Rect* rect,TTF_Font* font,string top[3]){
+    int w,h;
 
-void Lines::Storyboard(int* currentScene, int situation, string name, string Input, bool* isRunning, string* promptText){
+    //Title
+    SDL_Texture *tex = TextureManager::LoadTTF("TTF/alienleague.ttf",font,rend,"                          LEADERBOARDS              ");
+    SDL_QueryTexture(tex,NULL,NULL,&w,&h);
+    *rect = {rect->x,rect->y,w,h};
+    SDL_RenderCopy(rend,tex,NULL,rect);
+    SDL_DestroyTexture(tex);
+    rect->y += 70;
+
+    //Headers
+    SDL_Texture *htex = TextureManager::LoadTTF("TTF/alienleague.ttf",font,rend,"       NAME                                     TIME");
+    SDL_QueryTexture(htex,NULL,NULL,&w,&h);
+    *rect = {rect->x,rect->y,w,h};
+    SDL_RenderCopy(rend,htex,NULL,rect);
+    SDL_DestroyTexture(htex);
+    rect->y += 70;
+
+    fstream fin("Server/Leaderboard.dat",fstream::in);
+    string text;
+    for(int i = 0; i < 3; i++){
+        getline(fin,text,'\n');
+
+        if(text == "")
+            break;
+
+        SDL_Texture *tex = TextureManager::LoadTTF("TTF/alienleague.ttf",font,rend,text);
+        SDL_QueryTexture(tex,NULL,NULL,&w,&h);
+        *rect = {rect->x,rect->y,w,h};
+        SDL_RenderCopy(rend,tex,NULL,rect);
+        SDL_DestroyTexture(tex);
+        rect->y += 35;
+        text = "";
+    }
+    rect->y = 0;
+    fin.close();
+}
+
+bool lights = false, screwdriver = false, firstkey = false, hammer = false, doorunlock = false;
+bool keycard = false, metalkey = false, medlocker = false, leader = false;
+
+void Lines::Storyboard(int* currentScene, int situation, string name, string Input, bool* isRunning, string* promptText,bool* leaderboard){
 
     switch(*currentScene){
+        case 9:
+            if(leader == false){
+                (*promptText) = "Thank you!";
+                leader = true;
+                cout<<time<<location;
+                l.update(Input,time,location);
+            }
+            else{
+                (*currentScene) = 0;
+                (*promptText) = 1;
+                (*leaderboard) = false;
+            }
+            break;
         case 0:
             if(Input == "PLAY"){
                 if(situation == 1)
@@ -135,7 +189,9 @@ void Lines::Storyboard(int* currentScene, int situation, string name, string Inp
                 (*isRunning) = false;
             }
             else if(Input == "LEADERBOARD" or Input == "LEADERBOARDS"){
-                (*promptText) = "Leaderboards to be implemented\nIn a while";
+                (*leaderboard) = true;
+                (*promptText) = "Enter your name:";
+                (*currentScene) = 9;
             }
             else{
                 *(promptText) = "Wrong Input!";
@@ -324,7 +380,9 @@ void Lines::Storyboard(int* currentScene, int situation, string name, string Inp
                 (*isRunning) = false;
             }
             else if(Input == "LEADERBOARD" or Input == "LEADERBOARDS"){
-                (*promptText) = "Leaderboards to be implemented\nIn a while";
+                (*leaderboard) = true;
+                (*promptText) = "Enter your name:";
+                (*currentScene) = 9;
             }
             else{
                 (*promptText) = "Wrong Input!";

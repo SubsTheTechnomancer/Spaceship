@@ -1,6 +1,10 @@
-#include "Game.hpp"
+#pragma once
 
-class Leaderboards{
+#include "Game.hpp"
+#include "Client.hpp"
+
+class Leaderboard{
 public:
-    static void Leaderboards();
+    static string top[3];
+    static void update(string name, int time, int location);
 };
